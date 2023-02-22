@@ -1,0 +1,115 @@
+
+        <section class="content-header">
+          <h1>
+            Data gaji
+           
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"> Home</a></li>
+            <li class="active">gaji</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+    <!-- Main row -->
+          <div class="row">
+            <div class="col-xs-12">
+
+              <div class="box">
+                <div class="box-header">
+                <?php if($this->session->userdata('status') == 'admin'){?>
+                  <h3 class="box-title">Data gaji <a href="<?php echo base_url('gaji/tambah_gaji'); ?>" class="btn btn-primary"><i class="fa fa-plus"></i> Tambah</a></h3> 
+                <?php };?> 
+                 
+                </div><!-- /.box-header -->
+                <?php echo form_open("gaji/cari_gaji"); ?>
+                     <div class="box-header">
+                  <div class="col-md-4">
+                    <div class="input-group">
+                    <input name="date1" class="form-control" type="text" value="<?php if(!empty($t1))echo $t1; else echo""; ?>" id="datepicker4">
+                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-calendar"></i></span>
+                  </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="input-group">
+                    <input name="date2" class="form-control" type="text" value="<?php if(!empty($t2))echo $t2; else echo""; ?>" id="datepicker3">
+                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-calendar"></i></span>
+                  </div>
+                  </div>
+                  <div class="col-md-4">
+                    <button type="submit" class="btn btn-info"><i class="fa fa-search"></i> Cari</button>
+                    <?php 
+                    
+                    if(!empty($data) and !empty($t1) and !empty($t2)) { ?>
+                    <a href="<?php echo base_url('gaji/cetak_gaji_range/'.$t1.'/'.$t2.''); ?>" class="btn btn-warning" target="_blank"><i class="fa fa-print"></i> Cetak</a>
+                    <?php } ?>
+                    <a href="<?php echo base_url('gaji/cetak_gaji_semua'); ?>" class="btn btn-danger" target="_blank"><i class="fa fa-print"></i> Cetak Semua</a>
+                  </div> 
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                   <?php echo $this->session->flashdata('pesan'); ?>
+                   <div class="table-responsive">    
+                <table class="table table-bordered" id="example1">
+                <thead>
+                  <tr>
+                    <td><b>No</b></td>
+                    <td><b>Cetak</b></td>
+                    <td><b>KD gaji</b></td>
+                    <td><b>Bulan</b></td>
+                    <td><b>Tahun</b></td>
+                    <td><b>Nama Karyawan</b></td>
+                    <td><b>Jabatan</b></td>
+                     <!-- <td><b>Gaji/Jam</b></td>
+                    <td><b>Jumlah Jam Bekerja</b></td> -->
+                    <td><b>Gaji</b></td>
+                    <td><b>Piket</b></td>
+                    <td><b>Transport</b></td>
+                    <td><b>Uang Makan</b></td>
+                    <td><b>Potongan</b></td>
+                    <td><b>Total</b></td>
+                    <td><b>Act</b></td>
+                  </tr>
+                </thead>
+                <tbody> 
+                 <?php 
+                  $nama_bln=array(1=> "Januari", "Februari", "Maret", "April", "Mei", 
+                    "Juni", "Juli", "Agustus", "September", 
+                    "Oktober", "November", "Desember");
+                 for ($i = 0; $i < count($data); ++$i) { 
+                      $tot=$data[$i]->honor+$data[$i]->piket+$data[$i]->non_sertikasi+$data[$i]->bpjs-$data[$i]->potongan;
+                  ?>
+                  <tr>
+                    <td><?php echo ($i+1); ?></td>
+                    <td><a class="btn btn-warning btn-xs" target="blank" href="<?php echo base_url('gaji/cetak_slip/'.$data[$i]->kd_gaji.''); ?>">Cetak Slip Gaji</a></td>
+                    <td><?php echo $data[$i]->kd_gaji; ?></td>
+                    <td><?php echo $nama_bln[$data[$i]->bulan-0]; ?></td>
+                    <td><?php echo $data[$i]->tahun; ?></td>
+                     <td><?php echo $data[$i]->nm_karyawan; ?></td>
+                      <td><?php echo $data[$i]->nm_jabatan; ?></td>
+                      <!-- <?//php if($data[$i]->per_jam != null): ?>
+                      <td>Rp <?//php echo number_format($data[$i]->per_jam,0,".","."); ?></td>
+                      <?//php else : ?>
+                      <td>Rp 0 </td>
+                      <?//php endif;?>
+                      <td><//?php echo $data[$i]->jml_jam_ngajar; ?> jam</td> -->
+                      <td>Rp <?php echo number_format($data[$i]->honor,0,".","."); ?></td>
+                      <td>Rp <?php echo number_format($data[$i]->piket,0,".","."); ?></td>
+                      <td>Rp <?php echo number_format($data[$i]->non_sertikasi,0,".","."); ?></td>
+                      <td>Rp <?php echo number_format($data[$i]->bpjs,0,".","."); ?></td>
+                      <td>Rp <?php echo number_format($data[$i]->potongan,0,".","."); ?></td>
+                      <td>Rp <?php echo number_format($tot,0,".","."); ?></td>
+                    <td><a class="btn btn-success btn-xs"  href="<?php echo base_url('gaji/edit_gaji/'.$data[$i]->kd_gaji.''); ?>"><i class="fa fa-pencil"></i></a>
+
+                      <a class="btn btn-danger btn-xs" onclick="return confirm('Anda yakin ingin menghapus data ini ?')"  href="<?php echo base_url('gaji/hapus_gaji/'.$data[$i]->kd_gaji.''); ?>"><i class="fa fa-trash"></i></a></td>
+                  </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+                </div>
+                </div><!-- /.box-body -->
+              </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+
+            </section><!-- /.content -->
